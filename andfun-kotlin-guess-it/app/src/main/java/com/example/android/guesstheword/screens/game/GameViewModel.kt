@@ -8,8 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 
-class
-GameViewModel: ViewModel() {
+class GameViewModel: ViewModel() {
 
     // The current word
     private val _word = MutableLiveData<String>("")
@@ -24,6 +23,9 @@ GameViewModel: ViewModel() {
     private val _currentTime = MutableLiveData<Long>(0L)
     val currentTime: LiveData<Long> get() = _currentTime
 
+    private val _eventCorrect = MutableLiveData<Boolean>()
+    val eventCorrect: LiveData<Boolean> get() = _eventCorrect
+    
     val currentTimeString: LiveData<String> = Transformations.map(currentTime) {
         DateUtils.formatElapsedTime(it)
     }
@@ -108,11 +110,18 @@ GameViewModel: ViewModel() {
     fun onCorrect() {
         _score.value = _score.value?.plus(1)
         nextWord()
+        _eventCorrect.value = true
+    }
+
+    fun onCorrectFinished(){
+        _eventCorrect.value = false
     }
 
     fun onGameFinishComplete(){
         _gameEventFinished.value = false
     }
+
+
 
 
     companion object {
