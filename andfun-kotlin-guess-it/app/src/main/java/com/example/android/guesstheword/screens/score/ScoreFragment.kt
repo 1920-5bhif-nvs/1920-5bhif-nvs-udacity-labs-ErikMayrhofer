@@ -60,9 +60,9 @@ class ScoreFragment : Fragment() {
         viewModelFactory = ScoreViewModelFactory(scoreFragmentArgs.score)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ScoreViewModel::class.java)
 
-        viewModel.score.observe(this, Observer {
-            binding.scoreText.text = it.toString()
-        })
+//        viewModel.score.observe(this, Observer {
+//            binding.scoreText.text = it.toString()
+//        })
 
         viewModel.eventPlayAgain.observe(this, Observer {
             if(it) {
@@ -70,8 +70,11 @@ class ScoreFragment : Fragment() {
             }
         })
 
+        binding.scoreViewModel = viewModel
+        binding.lifecycleOwner = this
 
-        binding.playAgainButton.setOnClickListener { viewModel.onPlayAgain() }
+
+//        binding.playAgainButton.setOnClickListener { viewModel.onPlayAgain() }
 
         return binding.root
     }

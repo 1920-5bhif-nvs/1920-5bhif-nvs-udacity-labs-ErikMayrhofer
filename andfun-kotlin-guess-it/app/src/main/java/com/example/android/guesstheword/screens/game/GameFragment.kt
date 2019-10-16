@@ -34,9 +34,6 @@ import com.example.android.guesstheword.databinding.GameFragmentBinding
  * Fragment where the game is played
  */
 class GameFragment : Fragment() {
-
-
-
     private lateinit var binding: GameFragmentBinding
 
     private lateinit var viewModel: GameViewModel
@@ -44,7 +41,6 @@ class GameFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        // Inflate view and obtain an instance of the binding class
         binding = DataBindingUtil.inflate(
                 inflater,
                 R.layout.game_fragment,
@@ -55,30 +51,15 @@ class GameFragment : Fragment() {
         Log.i("GameFragment", "Called ViewModelProviers.of")
         viewModel = ViewModelProviders.of(this).get(GameViewModel::class.java)
 
-        viewModel.score.observe(this, Observer {
-            binding.scoreText.text = it.toString()
-        })
-
-        viewModel.word.observe(this, Observer {
-            binding.wordText.text = it
-        })
-
         viewModel.gameEventFinished.observe(this, Observer {
             if(it){
                 gameFinished()
             }
         })
 
-        viewModel.currentTime.observe(this, Observer {
-            binding.timerText.text = DateUtils.formatElapsedTime(it)
-        })
 
-        binding.correctButton.setOnClickListener {
-            viewModel.onCorrect()
-        }
-        binding.skipButton.setOnClickListener {
-            viewModel.onSkip()
-        }
+        binding.lifecycleOwner = this
+        binding.gameViewModel = viewModel
 
         updateScoreText()
         updateWordText()
