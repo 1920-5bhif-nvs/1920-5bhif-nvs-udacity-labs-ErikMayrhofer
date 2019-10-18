@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -39,8 +38,9 @@ import com.google.android.material.snackbar.Snackbar
  */
 class SleepTrackerFragment : Fragment() {
 
+    private lateinit var sleepTrackerViewModel: SleepTrackerViewModel
     private val sleepNightAdapter = SleepNightAdapter(SleepNightListener {nightId ->
-        Toast.makeText(context, "$nightId", Toast.LENGTH_LONG).show()
+        sleepTrackerViewModel.onSleepNightClicked(nightId)
     })
 
     /**
@@ -61,7 +61,7 @@ class SleepTrackerFragment : Fragment() {
 
         val viewModelFactory = SleepTrackerViewModelFactory(dataSource, application)
 
-        val sleepTrackerViewModel =
+        sleepTrackerViewModel =
                 ViewModelProviders.of(
                         this, viewModelFactory).get(SleepTrackerViewModel::class.java)
 
@@ -97,6 +97,15 @@ class SleepTrackerFragment : Fragment() {
         sleepTrackerViewModel.nights.observe(this, Observer {
             if(it != null) {
                 sleepNightAdapter.submitList(it)
+            }
+        })
+
+        sleepTrackerViewModel.navigateToSleepNightDetails.observe(this, Observer { night ->
+            night?.let {
+                this.findNavController().navigate(
+                        SleepTrackerFragmentDirections.actionSleepTrackerFragmentToSleepDetailFragment(night)
+                )
+                sleepTrackerViewModel.doneNavigateToSleepNightDetails()
             }
         })
 
