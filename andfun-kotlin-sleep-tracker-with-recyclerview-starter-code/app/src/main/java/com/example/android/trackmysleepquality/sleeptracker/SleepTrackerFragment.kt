@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -38,7 +39,9 @@ import com.google.android.material.snackbar.Snackbar
  */
 class SleepTrackerFragment : Fragment() {
 
-    private val sleepNightAdapter = SleepNightAdapter()
+    private val sleepNightAdapter = SleepNightAdapter(SleepNightListener {nightId ->
+        Toast.makeText(context, "$nightId", Toast.LENGTH_LONG).show()
+    })
 
     /**
      * Called when the Fragment is ready to display content to the screen.
