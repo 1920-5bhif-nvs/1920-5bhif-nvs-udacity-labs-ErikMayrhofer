@@ -109,6 +109,13 @@ class SleepTrackerFragment : Fragment() {
             }
         })
 
+        gridLayout.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int = when(position) {
+                0 -> 3
+                else -> 1
+            }
+        }
+
         return binding.root
     }
 }
