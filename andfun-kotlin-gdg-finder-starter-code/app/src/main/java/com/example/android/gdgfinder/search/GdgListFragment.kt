@@ -11,8 +11,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.example.android.gdgfinder.R
 import com.example.android.gdgfinder.databinding.FragmentGdgListBinding
 import com.google.android.gms.location.*
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 
 private const val LOCATION_PERMISSION_REQUEST = 1
@@ -44,8 +46,8 @@ class GdgListFragment : Fragment() {
         // Sets the adapter of the RecyclerView
         binding.gdgChapterList.adapter = adapter
 
-        viewModel.showNeedLocation.observe(viewLifecycleOwner, object: Observer<Boolean> {
-            override fun onChanged(show: Boolean?) {
+        viewModel.showNeedLocation.observe(viewLifecycleOwner,
+            Observer<Boolean> { show ->
                 // Snackbar is like Toast but it lets us show forever
                 if (show == true) {
                     Snackbar.make(
@@ -54,7 +56,29 @@ class GdgListFragment : Fragment() {
                         Snackbar.LENGTH_LONG
                     ).show()
                 }
+            })
+
+        viewModel.regionList.observe(viewLifecycleOwner, Observer<List<String>> {
+            it ?: return@Observer
+
+            val chipGroup = binding.regionList
+            val chipInflater = LayoutInflater.from(chipGroup.context)
+
+            val children = it.map {regionName ->
+                val chip = chipInflater.inflate(R.layout.region, chipGroup, false) as Chip
+                chip.text = regionName
+                chip.tag = regionName
+                chip.setOnCheckedChangeListener {button, isChecked ->
+                    viewModel.onFilterChanged(button.tag as String, isChecked)
+                }
+                chip
             }
+            chipGroup.removeAllViews()
+            children.forEach {chip ->
+                chipGroup.addView(chip)
+            }
+
+
         })
 
         setHasOptionsMenu(true)
