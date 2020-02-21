@@ -37,4 +37,8 @@ class RefreshDataWorker(appContext: Context, params: WorkerParameters): Coroutin
         }
     }
 
+    companion object {
+        const val WORK_NAME = "RefreshDataWorker"
+    }
+
 }
